@@ -1,0 +1,16 @@
+import json, requests, pandas as pd, csv
+url ='https://api.fda.gov/drug/event.json?search=receivedate:[20040101+TO+20160101]&count=patient.reaction.reactionmeddrapt.exact'
+res = requests.get(url)
+res.raise_for_status()
+drugData_parsed = json.loads(res.text)
+drugData = drugData_parsed["results"]
+drugData2 = open("drugs.csv","w")
+csvwriter = csv.writer(drugData2)
+count=0
+for drug in drugData:
+    if count == 0:
+        header = drug.keys()
+        csvwriter.writerow(header)
+        count += 1
+    csvwriter.writerow(drug.values())
+drugData2.close()
